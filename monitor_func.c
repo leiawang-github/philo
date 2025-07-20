@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   monitor_func.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: leia <leia@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: leiwang <leiwang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/11 19:21:56 by leiwang           #+#    #+#             */
-/*   Updated: 2025/07/20 11:22:58 by leia             ###   ########.fr       */
+/*   Updated: 2025/07/20 21:29:31 by leiwang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,13 +29,15 @@ void *monitor_func(void *arg)
 			if (now - last_eat >= sim->time_to_die)
 			{
 				printf("%ld %d died\n",
-					timestamp_ms() - sim->start_time, sim->philos[i].id);
+					now - sim->start_time, sim->philos[i].id);
 				sim->someone_died = 1;
-				return NULL;
+				break;
 			}
 			i++;
 		}
-		usleep(1000); 
+		if (sim->someone_died)
+            break;
+		usleep(1000);
 	}
 	return NULL;
 }
