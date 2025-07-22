@@ -6,7 +6,7 @@
 /*   By: leiwang <leiwang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 21:22:19 by leiwang           #+#    #+#             */
-/*   Updated: 2025/07/20 21:17:52 by leiwang          ###   ########.fr       */
+/*   Updated: 2025/07/22 19:08:45 by leiwang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 #include <sys/time.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <string.h>
 
 typedef struct s_simulation t_simulation;
 typedef struct s_philo t_philo;
