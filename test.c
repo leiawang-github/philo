@@ -135,49 +135,49 @@
 
 // }
 
-// typedef struct s_chef{
-// 	int id;
-// 	pthread_mutex_t *stove_mutex;
-// }t_chef;
+typedef struct s_chef{
+	int id;
+	pthread_mutex_t *stove_mutex;
+}t_chef;
 
-// void *chef_routine(void *arg)
-// {
-// 	t_chef *chef = (t_chef*)arg;
+void *chef_routine(void *arg)
+{
+	t_chef *chef = (t_chef*)arg;
 
-// 	int i = 0;
-// 	while (i < 3)
-// 	{
-// 		printf("chef %d is waiting for using the stove...\n", chef->id);
-// 		pthread_mutex_lock(chef->stove_mutex);
-// 		printf("chef %d is cooking...\n", chef->id);
-// 		sleep(1);
-// 		printf("Chef %d finishs cooking...\n", chef->id);
-// 		pthread_mutex_unlock(chef->stove_mutex);
-// 		i++;
-// 	}
-// 	return NULL;
-// }
+	int i = 0;
+	while (i < 3)
+	{
+		printf("chef %d is waiting for using the stove...\n", chef->id);
+		pthread_mutex_lock(chef->stove_mutex);
+		printf("chef %d is cooking...\n", chef->id);
+		sleep(1);
+		printf("Chef %d finishs cooking...\n", chef->id);
+		pthread_mutex_unlock(chef->stove_mutex);
+		i++;
+	}
+	return NULL;
+}
 
-// int main()
-// {
-// 	pthread_t thread[3];
-// 	t_chef chefs[3];   // 三个主厨结构体
-// 	int i = 0;
-// 	pthread_mutex_t stove_mutex;
-// 	pthread_mutex_init(&stove_mutex, NULL);
+int main()
+{
+	pthread_t thread[3];
+	t_chef chefs[3];   // 三个主厨结构体
+	int i = 0;
+	pthread_mutex_t stove_mutex;
+	pthread_mutex_init(&stove_mutex, NULL);
 
-// 	while (i < 3)
-// 	{
-// 		chefs[i].id = i + 1;
-// 		chefs[i].stove_mutex = &stove_mutex;
-// 		pthread_create(&thread[i], NULL, chef_routine,(void*)(&chefs[i]));
-// 		i++;
-// 	}
-// 	i = 0;
-// 	while(i < 3)
-// 		pthread_join(thread[i++], NULL);
-// 	pthread_mutex_destroy(&stove_mutex);
-// }
+	while (i < 3)
+	{
+		chefs[i].id = i + 1;
+		chefs[i].stove_mutex = &stove_mutex;
+		pthread_create(&thread[i], NULL, chef_routine,(void*)(&chefs[i]));
+		i++;
+	}
+	i = 0;
+	while(i < 3)
+		pthread_join(thread[i++], NULL);
+	pthread_mutex_destroy(&stove_mutex);
+}
 
 // typedef struct s_chef
 // {

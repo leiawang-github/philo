@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utilities.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: leiwang <leiwang@student.42.fr>            +#+  +:+       +#+        */
+/*   By: leia <leia@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/11 12:56:16 by leiwang           #+#    #+#             */
-/*   Updated: 2025/07/11 12:56:32 by leiwang          ###   ########.fr       */
+/*   Updated: 2025/07/25 14:37:02 by leia             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,4 +44,15 @@ int ft_atoi(char *str)
         i++;
     }
     return  res = res * sign;
+}
+void safe_print(t_simulation *sim, const char *format, ...)
+{
+	va_list args;
+
+	pthread_mutex_lock(&sim->print_lock);
+
+	va_start(args, format);
+	vprintf(format, args);
+	va_end(args);
+	pthread_mutex_unlock(&sim->print_lock);
 }
