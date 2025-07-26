@@ -6,78 +6,58 @@
 /*   By: leia <leia@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/11 12:54:36 by leiwang           #+#    #+#             */
-/*   Updated: 2025/07/25 14:39:34 by leia             ###   ########.fr       */
+/*   Updated: 2025/07/26 17:21:13 by leia             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosopher.h"
 
-static void philo_think(t_philo *philo)
+void	start_threads(t_simulation *sim)
 {
-	t_simulation *sim = philo->sim;
+	int	i;
 
-	safe_print(sim, "🤔 %ld Philo %d is thinking\n", timestamp_ms() - sim->start_time, philo->id);
-}
-
-static void philo_sleep(t_philo *philo)
-{
-	t_simulation *sim = philo->sim;
-
-	safe_print(sim, "😴 %ld Philo %d is sleeping\n", timestamp_ms() - sim->start_time, philo->id);
-	smart_sleep(sim->time_to_sleep, sim);
-}
-
-static void take_forks(t_philo *philo)
-{
-	t_simulation *sim = philo->sim;
-	int id = philo->id;
-
-	if (id % 2 == 0)
+	i = 0;
+	sim->start_time = timestamp_ms();
+	while (i < sim->philo_count)
 	{
-		pthread_mutex_lock(philo->left_fork);
-		safe_print(sim, "🍴 %ld Philo %d takes left fork\n", timestamp_ms() - sim->start_time, id);
-		pthread_mutex_lock(philo->right_fork);
-		safe_print(sim, "🍴 %ld Philo %d takes right fork\n", timestamp_ms() - sim->start_time, id);
+		sim->philo[i].last_meal_time = sim->start_time;
+		i++;
 	}
-	else
+	i = 0;
+	while (i < sim->philo_count)
 	{
-		pthread_mutex_lock(philo->right_fork);
-		safe_print(sim, "🍴 %ld Philo %d takes right fork\n", timestamp_ms() - sim->start_time, id);
-		pthread_mutex_lock(philo->left_fork);
-		safe_print(sim, "🍴 %ld Philo %d takes left fork\n", timestamp_ms() - sim->start_time, id);
+		if (pthread_create(&sim->philo[i].thread, NULL, philo_routine,
+				&sim->philo[i]) != 0)
+		{
+			cleanup_simulation(sim, i);
+			error_exit("Thread creation failed");
+		}
+		i++;
 	}
 }
 
-static void drop_forks(t_philo *philo)
+void	*philo_routine(void *arg)
 {
-	pthread_mutex_unlock(philo->left_fork);
-	pthread_mutex_unlock(philo->right_fork);
-}
+	t_philo	*philo;
 
-static void philo_eat(t_philo *philo)
-{
-	t_simulation *sim = philo->sim;
-
-	take_forks(philo);
-	safe_print(sim, "🥣 %ld Philo %d is eating\n", timestamp_ms() - sim->start_time, philo->id);
-	philo->last_meal_time = timestamp_ms();
-	smart_sleep(sim->time_to_eat, sim);
-	philo->meals_eaten++;
-	drop_forks(philo);
-}
-
-
-void *philo_routine(void *arg)
-{
-	t_philo *philo = (t_philo *)arg;
-	t_simulation *sim = philo->sim;
-
-	while ((sim->must_eat_count == -1 || philo->meals_eaten < sim->must_eat_count)
-	       && !sim->someone_died)
+	philo = (t_philo *)arg;
+	if (!philo)
+		return (NULL);
+	while (!has_someone_died(philo->sim))
 	{
+		if (philo->sim->must_eat_count != -1
+			&& philo->meals_eaten >= philo->sim->must_eat_count)
+		{
+			safe_print(philo->sim, "has finished eating", philo->id);
+			break ;
+		}
 		philo_eat(philo);
+		if (has_someone_died(philo->sim))
+			break ;
 		philo_sleep(philo);
+		if (has_someone_died(philo->sim))
+			break ;
 		philo_think(philo);
 	}
-	return NULL;
+	return (NULL);
 }

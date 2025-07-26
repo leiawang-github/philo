@@ -1,26 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   sleep.c                                            :+:      :+:    :+:   */
+/*   parse_args.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: leia <leia@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/11 16:14:12 by leiwang           #+#    #+#             */
-/*   Updated: 2025/07/26 16:03:38 by leia             ###   ########.fr       */
+/*   Created: 2025/07/08 18:40:33 by leiwang           #+#    #+#             */
+/*   Updated: 2025/07/26 14:23:49 by leia             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosopher.h"
 
-void	smart_sleep(long duration, t_simulation *sim)
+int	check_args(int argc, char **argv)
 {
-	long	start;
+	int	i;
+	int	j;
 
-	start = timestamp_ms();
-	while ((timestamp_ms() - start) < duration)
+	i = 1;
+	if (argc != 5 && argc != 6)
+		error_exit("Invalid number of arguments.");
+	while (i < argc)
 	{
-		if (has_someone_died(sim))
-			break ;
-		usleep(100);
+		j = 0;
+		while (argv[i][j])
+		{
+			if (is_digit(argv[i][j]) == 0)
+				error_exit("All arguments must be digits.");
+			j++;
+		}
+		i++;
 	}
+	return (1);
 }
