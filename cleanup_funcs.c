@@ -6,56 +6,56 @@
 /*   By: leia <leia@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/25 10:57:15 by leia              #+#    #+#             */
-/*   Updated: 2025/07/26 16:14:18 by leia             ###   ########.fr       */
+/*   Updated: 2025/07/28 07:39:03 by leia             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosopher.h"
 
-void	error_exit(const char *msg)
+int	error_exit(const char *msg) ///
 {
-	printf("❌ Error: %s\n", msg);
-	exit(1);
+	if (msg == NULL)
+	{
+		printf("❌ Error: Unknown error occurred\n");
+		exit(1);
+	}
+	if (strcmp(msg, "malloc failed for philos") == 0)
+	{
+		printf("❌ Error: %s\n", msg);
+		exit(1);
+	}
 }
 
-void	destroy_forks(pthread_mutex_t *forks, int count)
+void	destroy_mutexex(t_simulation *sim)
+{
+	pthread_mutex_destroy(&sim->print_lock);
+	pthread_mutex_destroy(&sim->death_lock);
+	pthread_mutex_destroy(&sim->philo->meal_lock);
+}
+
+void	destroy_and_free_forks(t_simulation *sim)
 {
 	int	i;
 
 	i = 0;
-	while (i < count)
+	while (i < sim->count)
 	{
-		pthread_mutex_destroy(&forks[i]);
+		pthread_mutex_destroy(&sim->forks[i]);
 		i++;
 	}
+	free(sim->forks);
 }
 
-void	destroy_forks_and_free(pthread_mutex_t *forks, int count)
+void	destroy_and_free_philo(t_simulation *sim)
 {
-	destroy_forks(forks, count);
-	free(forks);
+	pthread_destroy_mutex(&sim->philo->right_fork);
+	pthread_destroy_mutex(&sim->philo->left_fork);
+	free(sim->philo);
 }
 
-void	destroy_and_exit(t_simulation *sim, pthread_mutex_t *forks, int count,
-		const char *msg)
+void	clean_all(t_simulation *sim)
 {
-	destroy_forks_and_free(forks, count);
-	pthread_mutex_destroy(&sim->print_lock);
-	error_exit(msg);
-}
-
-void	cleanup_simulation(t_simulation *sim, int fork_count)
-{
-	if (!sim)
-		return ;
-	if (sim->forks)
-	{
-		destroy_forks(sim->forks, fork_count);
-		free(sim->forks);
-	}
-	if (sim->philo)
-		free(sim->philo);
-	pthread_mutex_destroy(&sim->print_lock);
-	pthread_mutex_destroy(&sim->death_lock);
-	free(sim);
+	destroy_mutexex(sim);
+	destroy_and_free_forks(sim);
+	destroy_and_free_philo(sim);
 }

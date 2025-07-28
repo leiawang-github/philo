@@ -6,17 +6,17 @@
 #    By: leia <leia@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/07/23 16:19:48 by leia              #+#    #+#              #
-#    Updated: 2025/07/26 17:37:10 by leia             ###   ########.fr        #
+#    Updated: 2025/07/27 10:05:33 by leia             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME = philosopher
+NAME = philo
 SRC = main.c monitor_func.c parse_args.c routine.c sleep.c utilities.c \
       init_funcs.c cleanup_funcs.c death_check.c action_funcs.c
 
 OBJ = $(SRC:.c=.o)
 
-CC = cc -g 
+CC = cc  
 
 CFLAGS = -Wall -Wextra -Werror
 

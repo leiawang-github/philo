@@ -6,7 +6,7 @@
 /*   By: leia <leia@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 21:22:19 by leiwang           #+#    #+#             */
-/*   Updated: 2025/07/26 16:20:06 by leia             ###   ########.fr       */
+/*   Updated: 2025/07/28 07:39:28 by leia             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ typedef struct s_philo
 
 typedef struct s_simulation
 {
-	int						philo_count;
+	int						count;
 	int						time_to_die;
 	int						time_to_eat;
 	int						time_to_sleep;
@@ -46,21 +46,20 @@ typedef struct s_simulation
 	int						must_eat_count;
 	int						someone_died;
 	pthread_t				monitor;
+	pthread_mutex_t			*forks;
 	pthread_mutex_t			print_lock;
 	pthread_mutex_t			death_lock;
-	pthread_mutex_t			*forks;
 	t_philo					*philo;
 }							t_simulation;
 
 // init_funcs
-void						init_struct(t_simulation *sim, char **argv);
-void						init_mutexes(t_simulation *sim);
-void						init_sim(t_simulation *sim, char **argv);
-void						init_philo(t_simulation *sim);
+int							init_mutex(t_simulation *sim);
+int							init_sim(t_simulation *sim, char **argv);
+int							init_philo(t_simulation *sim);
+int							init_all(t_simulation *sim, char **argv);
 
 // fork_action_funcs
 void						take_forks(t_philo *philo);
-void						drop_forks(t_philo *philo);
 void						philo_eat(t_philo *philo);
 void						philo_think(t_philo *philo);
 void						philo_sleep(t_philo *philo);
@@ -69,8 +68,11 @@ void						philo_sleep(t_philo *philo);
 int							is_digit(char c);
 int							ft_atoi(char *str);
 
+// death_check
+int							check_death(t_simulation *sim);
+int							is_dead(t_simulation *sim);
+
 // monitor_funcs
-int							check_death(t_simulation *sim, t_philo *philo);
 void						*monitor_func(void *arg);
 
 long						timestamp_ms(void);
@@ -80,17 +82,12 @@ void						smart_sleep(long duration, t_simulation *sim);
 void						safe_print(t_simulation *sim, const char *msg,
 								int id);
 void						start_threads(t_simulation *sim);
-int							has_someone_died(t_simulation *sim);
 
 // cleanup_funcs
+void						destroy_mutexex(t_simulation *sim);
+void						destroy_and_free_forks(t_simulation *sim);
 void						error_exit(const char *msg);
-void						destroy_forks(pthread_mutex_t *forks, int count);
-void						destroy_forks_and_free(pthread_mutex_t *forks,
-								int count);
-void						destroy_and_exit(t_simulation *sim,
-								pthread_mutex_t *forks, int count,
-								const char *msg);
-void						cleanup_simulation(t_simulation *sim,
-								int fork_count);
+void						destroy_and_free_philo(t_simulation *sim);
+void						clean_all(t_simulation *sim);
 
 #endif
