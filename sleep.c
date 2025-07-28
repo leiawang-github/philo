@@ -6,7 +6,7 @@
 /*   By: leia <leia@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/11 16:14:12 by leiwang           #+#    #+#             */
-/*   Updated: 2025/07/26 16:03:38 by leia             ###   ########.fr       */
+/*   Updated: 2025/07/28 09:09:36 by leia             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	smart_sleep(long duration, t_simulation *sim)
 	start = timestamp_ms();
 	while ((timestamp_ms() - start) < duration)
 	{
-		if (has_someone_died(sim))
+		if (is_dead(sim))
 			break ;
 		usleep(100);
 	}

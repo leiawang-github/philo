@@ -6,7 +6,7 @@
 /*   By: leia <leia@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 14:13:09 by leia              #+#    #+#             */
-/*   Updated: 2025/07/27 22:49:12 by leia             ###   ########.fr       */
+/*   Updated: 2025/07/28 12:35:02 by leia             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ void	take_forks(t_philo *philo)
 		pthread_mutex_lock(philo->left_fork);
 	}
 	pthread_mutex_lock(&philo->meal_lock);
-	philo->last_meal_time = get_time();
+	philo->last_meal_time = timestamp_ms();
 	pthread_mutex_unlock(&philo->meal_lock);
 	safe_print(philo->sim, "get two forks!", philo->id);
 	pthread_mutex_unlock(philo->left_fork);

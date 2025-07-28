@@ -6,7 +6,7 @@
 /*   By: leia <leia@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 21:22:19 by leiwang           #+#    #+#             */
-/*   Updated: 2025/07/28 07:39:28 by leia             ###   ########.fr       */
+/*   Updated: 2025/07/28 13:58:59 by leia             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,12 @@
 # include <string.h>
 # include <sys/time.h>
 # include <unistd.h>
+
+# define ERR_ARGC 1
+# define ERR_ARGV 2
+# define ERR_MALLOC 3
+# define ERR_THREAD 4
+# define ERR_MUTEX 5
 
 typedef struct s_simulation	t_simulation;
 typedef struct s_philo		t_philo;
@@ -46,6 +52,7 @@ typedef struct s_simulation
 	int						must_eat_count;
 	int						someone_died;
 	pthread_t				monitor;
+	int						created_threads;
 	pthread_mutex_t			*forks;
 	pthread_mutex_t			print_lock;
 	pthread_mutex_t			death_lock;
@@ -69,25 +76,26 @@ int							is_digit(char c);
 int							ft_atoi(char *str);
 
 // death_check
-int							check_death(t_simulation *sim);
+int							check_death(t_simulation *sim, int i);
 int							is_dead(t_simulation *sim);
 
 // monitor_funcs
 void						*monitor_func(void *arg);
-
+int							check_all_ate(t_simulation *sim);
+int							handle_one_philo(char **argv);
 long						timestamp_ms(void);
 void						*philo_routine(void *arg);
 int							check_args(int argc, char **argv);
 void						smart_sleep(long duration, t_simulation *sim);
 void						safe_print(t_simulation *sim, const char *msg,
 								int id);
-void						start_threads(t_simulation *sim);
+int							start_threads(t_simulation *sim);
 
 // cleanup_funcs
 void						destroy_mutexex(t_simulation *sim);
-void						destroy_and_free_forks(t_simulation *sim);
-void						error_exit(const char *msg);
-void						destroy_and_free_philo(t_simulation *sim);
+void						destroy_forks(t_simulation *sim);
+void						destroy_philo(t_simulation *sim);
 void						clean_all(t_simulation *sim);
+int							print_error(int err_code);
 
 #endif

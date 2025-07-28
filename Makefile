@@ -6,19 +6,21 @@
 #    By: leia <leia@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/07/23 16:19:48 by leia              #+#    #+#              #
-#    Updated: 2025/07/27 10:05:33 by leia             ###   ########.fr        #
+#    Updated: 2025/07/28 12:33:41 by leia             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = philo
 SRC = main.c monitor_func.c parse_args.c routine.c sleep.c utilities.c \
-      init_funcs.c cleanup_funcs.c death_check.c action_funcs.c
+      init_funcs.c cleanup_funcs.c action_funcs.c
 
 OBJ = $(SRC:.c=.o)
 
-CC = cc  
+CC = cc  -g
 
 CFLAGS = -Wall -Wextra -Werror
+
+all: $(NAME)
 
 $(NAME): $(OBJ)
 	$(CC) $(CFLAGS) -o $(NAME) $(OBJ)

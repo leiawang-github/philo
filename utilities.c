@@ -6,7 +6,7 @@
 /*   By: leia <leia@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/11 12:56:16 by leiwang           #+#    #+#             */
-/*   Updated: 2025/07/26 17:45:09 by leia             ###   ########.fr       */
+/*   Updated: 2025/07/28 09:10:02 by leia             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ int	ft_atoi(char *str)
 void	safe_print(t_simulation *sim, const char *msg, int id)
 {
 	pthread_mutex_lock(&sim->print_lock);
-	if (!has_someone_died(sim))
+	if (!is_dead(sim))
 		printf("%ld %d %s\n", timestamp_ms() - sim->start_time, id, msg);
 	pthread_mutex_unlock(&sim->print_lock);
 }
